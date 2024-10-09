@@ -1,0 +1,40 @@
+.banner {
+    display: flex;
+    background-color: purple;
+    color: purple;
+    height: 17%;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.logo_image{
+    height: 75px; 
+    width: 75px; 
+    display: flex;
+}
+.title {
+    height: 5%;
+}
+
+.log_container{
+    display: flex;
+    /*float: right;*/
+    /*margin-right: 20px;*/
+    justify-content: flex-end;
+   /* display: inline-block;*/
+}
+
+.content{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    max-height: 80vh;
+    overflow: auto; 
+}
+
+.interact{
+    align-items: center;
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+}
