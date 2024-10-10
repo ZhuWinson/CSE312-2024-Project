@@ -16,15 +16,15 @@ def homehtml():
 def route_image(filename):
     pass
 
-# # respond with "index.js" contents
-# @app.route("/public/index.js")
-# def route_js():
-#     pass
-# 
-# # respond with "style.css" contents
-# @app.route("/public/style.css")
-# def route_css():
-#     pass
+# respond with "style.css" contents
+@app.route("/public/style.css")
+def route_css():
+    pass
+
+# respond with "index.js" contents
+@app.route("/public/index.js")
+def route_js():
+    pass
 
 if __name__ == "__main__":
     app.run()
