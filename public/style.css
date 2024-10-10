@@ -1,7 +1,7 @@
 .banner {
     display: flex;
-    background-color: purple;
-    color: purple;
+    background-color: grey;
+    color: grey;
     height: 17%;
     align-items: center;
     justify-content: space-between;
@@ -24,17 +24,47 @@
    /* display: inline-block;*/
 }
 
+.content-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 80vh;
+    width: 100%; 
+}
+
 .content{
     display: flex;
     justify-content: center;
     align-items: center;
+    position: relative;
     max-height: 80vh;
     overflow: auto; 
 }
 
 .interact{
-    align-items: center;
+    /*align-items: center;*/
     position: absolute;
     bottom: 10px;
     left: 10px;
+}
+
+#Log_button{
+    background-color: blue; 
+    color: white; 
+    border: none; 
+    border-radius: 25px;
+}
+
+#int_button{
+    background-color: blue; 
+    color: white; 
+    border: none; 
+    border-radius: 25px;
+}
+
+#Selections{
+    background-color: blue; 
+    color: white; 
+    border: none; 
+    border-radius: 25px;
 }
