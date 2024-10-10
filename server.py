@@ -12,19 +12,19 @@ def homehtml():
 #
 # possibly simplify this by only serving one image?
 #
-@app.route("/public/image/<filename>")
+@app.route("/templates/image/<filename>")
 def route_image(filename):
-    pass
+    return render_template(filename)
 
 # respond with "style.css" contents
-@app.route("/public/style.css")
+@app.route("/templates/style.css")
 def route_css():
-    pass
+    return render_template("style.css")
 
 # respond with "index.js" contents
-@app.route("/public/index.js")
+@app.route("/templates/index.js")
 def route_js():
-    pass
-
+    return render_template("index.js")
+    
 if __name__ == "__main__":
-    app.run()
+    app.run(host="0.0.0.0", port=8080, debug=True)
