@@ -23,24 +23,24 @@
     
     <div>
         <div>
-            <select>
+            <select id="categoryMenu" onchange="setFeedCategory(this.value)">
                 <option value="default" selected disabled>Filter by category</option>
-                <option value="option1">Trending</option>
-                <option value="option2">Animals</option>
-                <option value="option3">Dark Humor</option>
-                <option value="option4">Gaming</option>
-                <option value="option5">Political</option>
-                <option value="option6">Pop Culture</option>
-                <option value="option7">Sports</option>
-                <option value="option8">Technology</option>
-                <option value="option9">Wholesome</option>
-                <option value="option10">Other</option>
+                <option value="trending">Trending</option>
+                <option value="animals">Animals</option>
+                <option value="darkHumor">Dark Humor</option>
+                <option value="gaming">Gaming</option>
+                <option value="political">Political</option>
+                <option value="popCulture">Pop Culture</option>
+                <option value="sports">Sports</option>
+                <option value="tecnology">Technology</option>
+                <option value="wholesome">Wholesome</option>
+                <option value="other">Other</option>
             </select>
         </div>
     </div>
 
     <div>
-        <img src="image/meme.png" alt="Trending Image">
+        <img id="feedImage" alt="Feed Image">
         
         <div>
             <button>Like</button>
@@ -49,6 +49,8 @@
     </div>
 
 </div>
+
+<script src="index.js"></script>
 
 </body>
 </html>
