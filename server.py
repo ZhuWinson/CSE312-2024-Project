@@ -1,12 +1,13 @@
 from flask import Flask, redirect, url_for, render_template, request
-from util.accounts import register, login, accountCollection
+from util.accounts import register, login, logout
 
 app = Flask(__name__)
 
-# respond with "index.html" contents
 @app.route("/")
 def homehtml():
-    return render_template("index.html")
+    if "token" in request.cookies:
+        return render_template("loggedin.html")
+    return render_template("loggedout.html")
 
 @app.route("/register", methods=["POST"])
 def registerForm():
@@ -20,13 +21,9 @@ def loginForm():
     password = request.form.get("password")
     return login(username, password)
 
-@app.route("/rTest")
-def rTest():
-    return f"<p> Registered </p>"
-
-@app.route("/lTest")
-def lTest():
-    return f"<p> Logged In </p>"
+@app.route("/logout", methods=["POST"])
+def logoutForm():
+    return logout()
 
 @app.route("/invalid")
 def invalid():
