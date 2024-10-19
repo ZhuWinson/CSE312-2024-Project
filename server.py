@@ -1,4 +1,5 @@
-from flask import Flask, redirect, url_for, render_template
+from flask import Flask, redirect, url_for, render_template, request
+from util.accounts import register, login, accountCollection
 
 app = Flask(__name__)
 
@@ -7,24 +8,29 @@ app = Flask(__name__)
 def homehtml():
     return render_template("index.html")
 
-# if "filename" exists respond with contents of "filename"
-# else respond with 404 not found
-#
-# possibly simplify this by only serving one image?
-#
-@app.route("/templates/image/<filename>")
-def route_image(filename):
-    return render_template(filename)
+@app.route("/register", methods=["POST"])
+def registerForm():
+    username = request.form.get("username")
+    password = request.form.get("password")
+    return register(username, password)
 
-# respond with "style.css" contents
-@app.route("/templates/style.css")
-def route_css():
-    return render_template("style.css")
+@app.route("/login", methods=["POST"])
+def loginForm():
+    username = request.form.get("username")
+    password = request.form.get("password")
+    return login(username, password)
 
-# respond with "index.js" contents
-@app.route("/templates/index.js")
-def route_js():
-    return render_template("index.js")
+@app.route("/rTest")
+def rTest():
+    return f"<p> Registered </p>"
+
+@app.route("/lTest")
+def lTest():
+    return f"<p> Logged In </p>"
+
+@app.route("/invalid")
+def invalid():
+    return "<p> Something broke </p>"
     
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8080, debug=True)
