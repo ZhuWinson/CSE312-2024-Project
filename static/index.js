@@ -1,11 +1,11 @@
 let animalImages = {
-    "image/cat.jpg": 50,
-    "image/dog.jpg": 25,
+    "/static/image/cat.jpg": 50,
+    "/static/image/dog.jpg": 25,
 }
 
 let trendingImages = {
-    "image/meme1.png": 100,
-    "image/meme2.webp": 50,
+    "/static/image/meme1.png": 100,
+    "/static/image/meme2.webp": 50,
 }
 
 let categories = {
