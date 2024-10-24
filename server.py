@@ -29,6 +29,8 @@ def logout_submit():
 def register_submit():
     username = request.form.get("username")
     password = request.form.get("password")
+    confirm_password = request.form.get("confirm_password")
+    # assert password == confirm_password
     return register(username, password)
 
 @app.route("/register", methods=["GET"])
