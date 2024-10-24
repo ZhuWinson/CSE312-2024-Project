@@ -1,3 +1,4 @@
+/*
 let animalImages = {
     "/static/image/cat.jpg": 50,
     "/static/image/dog.jpg": 25,
@@ -29,3 +30,4 @@ function setFeedCategory(category) {
 }
 
 setFeedCategory("meme")
+*/

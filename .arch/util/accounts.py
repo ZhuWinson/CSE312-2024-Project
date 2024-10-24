@@ -54,7 +54,7 @@ def register(username, password):
             salt = bcrypt.gensalt()
             hashedPassword = bcrypt.hashpw(password.encode(), salt)
             accountCollection.insert_one({"username": username, "hashedpassword": hashedPassword})
-            return redirect("/")
+            return redirect("/rTest")
     return redirect("/invalid")
 
 def login(username, password):
@@ -90,4 +90,3 @@ def logout():
     response = make_response(redirect("/"))
     response.set_cookie("token", "", max_age=0)
     return response
-
