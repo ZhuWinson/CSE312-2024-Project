@@ -1,4 +1,3 @@
-/*
 let animalImages = {
     "/static/image/cat.jpg": 50,
     "/static/image/dog.jpg": 25,
@@ -23,11 +22,10 @@ function setFeedCategory(category) {
         if(upvotes > maxUpvotes) {
             feedImage = image
             maxUpvotes = upvotes
-        } 
+        }
     }
     let element = document.getElementById("feedImage")
     element.src = feedImage
 }
 
 setFeedCategory("meme")
-*/

@@ -12,6 +12,7 @@
         <div class="logo" onclick="location.href='/'">
             <img class="logo_image" src="/static/image/lmao_logo.jpg">
             <div class="logo_text">LMAO.com</div>
+            <div class="username_display">{{username}}</div>
         </div>
         <div class="header_title">{{header_title}}</div>
         <div class="header_buttons">
@@ -65,7 +66,7 @@
                     {% if content_type == "register_form" %}
                         <label>Confirm Password:&nbsp;
                             <br>
-                            <input type="password" name="confirm_password">
+                            <input type="password" name="verify">
                         </label>
                     {% endif %}
                     <br><br>

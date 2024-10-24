@@ -43,14 +43,12 @@ def validate_password(password):
     return length and special and lowercase and uppercase and number
 
 def register(username, password, verification):
-    # #`Testing purposes
-    # accountCollection.delete_many({})
-
-    # If valid password then add account to database
+    # If valid password and match then add account to database
     if not validate_password(password):
         return redirect("/invalidpassword")
     if not password == verification:
         return redirect("/passwordmismatch")
+
     #Check if username is taken
     existingUser = accountCollection.find_one({"username": username})
     if existingUser is None:
@@ -95,3 +93,5 @@ def logout():
     response.set_cookie("token", "", max_age=0)
     return response
 
+def display_username():
+    pass

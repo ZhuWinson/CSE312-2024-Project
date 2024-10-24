@@ -1,23 +1,8 @@
-from flask import Flask, render_template, request
-from util.accounts import register, login, logout
+from flask import Flask, render_template, request, redirect
+from util.accounts import register, login, logout, accountCollection
+import secrets
 
 app = Flask(__name__)
-
-@app.route("/", methods=["GET"])
-def home_page():
-    return render_index("Trending", "post_list")
-
-@app.route("/invalidpassword")
-def invalid_password():
-    return "<p> Invalid Password </p>"
-
-@app.route("/passwordmismatch")
-def mismatch_password():
-    return "<p> Passwords do not match </p>"
-
-@app.route("/usertaken")
-def user_taken():
-    return "<p> Username Taken </p>"
 
 @app.route("/login", methods=["POST"])
 def login_submit():
@@ -45,11 +30,20 @@ def register_page():
     return render_index("Registration", "register_form")
 
 def render_index(header_title, content_type):
-    authenticated = "token" in request.cookies
+    username = "Guest"
+    authenticated = False
+    if "token" in request.cookies:
+        token = request.cookies.get("token")
+        authenticated = "token" in request.cookies
+        user = accountCollection.find_one({"token": token})
+        userContent = dict(user)
+        username = userContent.get("username")
+
     return render_template(
         "index.html",
         authenticated=authenticated, 
         header_title=header_title,
+        username=username,
         content_type=content_type)
 
 if __name__ == "__main__":
