@@ -42,20 +42,24 @@ def validate_password(password):
 
     return length and special and lowercase and uppercase and number
 
-def register(username, password):
-    #`Testing purposes
-    accountCollection.delete_many({})
+def register(username, password, verification):
+    # #`Testing purposes
+    # accountCollection.delete_many({})
 
+    # If valid password then add account to database
+    if not validate_password(password):
+        return redirect("/invalidpassword")
+    if not password == verification:
+        return redirect("/passwordmismatch")
     #Check if username is taken
     existingUser = accountCollection.find_one({"username": username})
     if existingUser is None:
-        # If valid password then add account to database
-        if validate_password(password):
-            salt = bcrypt.gensalt()
-            hashedPassword = bcrypt.hashpw(password.encode(), salt)
-            accountCollection.insert_one({"username": username, "hashedpassword": hashedPassword})
-            return redirect("/")
-    return redirect("/invalid")
+        salt = bcrypt.gensalt()
+        hashedPassword = bcrypt.hashpw(password.encode(), salt)
+        accountCollection.insert_one({"username": username, "hashedpassword": hashedPassword})
+        return redirect("/")
+    else:
+        return redirect("/usertaken")
 
 def login(username, password):
     #Find account and check if it exists

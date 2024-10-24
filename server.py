@@ -7,9 +7,17 @@ app = Flask(__name__)
 def home_page():
     return render_index("Trending", "post_list")
 
-@app.route("/invalid")
-def invalid():
-    return "<p> Something broke </p>"
+@app.route("/invalidpassword")
+def invalid_password():
+    return "<p> Invalid Password </p>"
+
+@app.route("/passwordmismatch")
+def mismatch_password():
+    return "<p> Passwords do not match </p>"
+
+@app.route("/usertaken")
+def user_taken():
+    return "<p> Username Taken </p>"
 
 @app.route("/login", methods=["POST"])
 def login_submit():
@@ -29,7 +37,8 @@ def logout_submit():
 def register_submit():
     username = request.form.get("username")
     password = request.form.get("password")
-    return register(username, password)
+    verification = request.form.get("verify")
+    return register(username, password, verification)
 
 @app.route("/register", methods=["GET"])
 def register_page():
