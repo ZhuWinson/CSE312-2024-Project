@@ -61,6 +61,13 @@
                         <br>
                         <input type="password" name="password">
                         </label>
+                    <br>
+                    {% if content_type == "register_form" %}
+                        <label>Confirm Password:&nbsp;
+                            <br>
+                            <input type="password" name="confirm_password">
+                        </label>
+                    {% endif %}
                     <br><br>
                     {% if content_type == "register_form"%}
                         <input type="submit" value="Register">
