@@ -5,7 +5,11 @@ app = Flask(__name__)
 
 @app.route("/", methods=["GET"])
 def home_page():
-    return render_index("Trending", "post_list")
+    return render_template(
+        "index.html",
+        authenticated="token" in request.cookies, 
+        header_title="Home",
+        content_type="post_list")
 
 @app.route("/invalid")
 def invalid():
@@ -19,7 +23,11 @@ def login_submit():
 
 @app.route("/login", methods=["GET"])
 def login_page():
-    return render_index("Login", "login_form")
+    return render_template(
+        "index.html",
+        authenticated="token" in request.cookies, 
+        header_title="Login",
+        content_type="login_form")
 
 @app.route("/logout", methods=["GET", "POST"])
 def logout_submit():
@@ -35,15 +43,11 @@ def register_submit():
 
 @app.route("/register", methods=["GET"])
 def register_page():
-    return render_index("Registration", "register_form")
-
-def render_index(header_title, content_type):
-    authenticated = "token" in request.cookies
     return render_template(
         "index.html",
-        authenticated=authenticated, 
-        header_title=header_title,
-        content_type=content_type)
+        authenticated="token" in request.cookies, 
+        header_title="Registration",
+        content_type="register_form")
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8080, debug=True)
