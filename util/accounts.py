@@ -74,7 +74,7 @@ def login(username, password):
             response = make_response(redirect("/"))
             response.set_cookie("auth_token",auth_token,max_age=3600,httponly=True)
             return response
-    return redirect("/invalid")
+    return redirect("/invalidpassword")
 
 def logout():
     #Find which account is with this auth_token

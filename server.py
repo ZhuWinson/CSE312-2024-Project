@@ -7,6 +7,22 @@ from util.renderer import render_home_page
 
 app = Flask(__name__, static_url_path="/static")
 
+@app.route("/", methods=["GET"])
+def home_page():
+    return render_index("Trending", "post_list")
+
+@app.route("/invalidpassword")
+def invalid_password():
+    return "<p> Invalid Password </p>",{"Refresh": "1; url=http://localhost:8080/"}
+
+@app.route("/passwordmismatch")
+def mismatch_password():
+    return "<p> Passwords Do Not Match </p>",{"Refresh": "1; url=http://localhost:8080/"}
+
+@app.route("/usertaken")
+def user_taken():
+    return "<p> Username Taken </p>",{"Refresh": "1; url=http://localhost:8080/"}
+
 @app.route("/account", methods=["GET"])
 def account_page():
     auth_token = request.cookies.get("auth_token")
@@ -62,8 +78,10 @@ def render_index(banner_title, template_name):
         auth_token = request.cookies.get("auth_token")
         authenticated = "auth_token" in request.cookies
         user = accountCollection.find_one({"auth_token": auth_token})
-        userContent = dict(user)
-        username = userContent.get("username")
+        if not user is None:
+            userContent = dict(user)
+            username = userContent.get("username")
+
     return render_template(
         "home_page.html",
         authenticated=authenticated, 
