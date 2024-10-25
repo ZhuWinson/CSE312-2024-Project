@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LMAO.com</title>
+    <link rel="stylesheet" type="text/css" href="/static/style.css"/>
+    <link rel="shortcut icon" type="image/x-icon" href="/static/image/favicon.ico">
+</head>
+<body onload="setup()">
+    <div class="banner">
+        <div class="logo" onclick="location.href='/'">
+            <img class="logo_image" src="/static/image/lmao_logo.jpg">
+            <div class="logo_text">LMAO.com</div>
+        </div>
+        <div class="banner_title">{{banner_title}}</div>
+        <div class="banner_buttons">
+            <button onclick="location.href='/create'">Create post</button>
+            {% if authenticated %}
+                <button onclick="location.href='/logout'">Logout</button>
+                <button onclick="location.href='/account'">Account</button>
+            {% else %}
+                <button onclick="location.href='/login'">Login</button>
+                <button onclick="location.href='/register'">Register</button>
+            {% endif %}
+        </div>
+    </div>
+    <div class="sidebar">
+        <div class="username">
+            Welcome
+            <br>
+            {% if authenticated %}
+                {{username}}
+            {% else %}
+                Guest User
+            {% endif %}
+        </div>
+        <div class="category_selector">
+            <div class="category_header">Categories</div>
+            <a>Trending</a>
+            <a>Animals</a>
+            <a>Dark Humor</a>
+            <a>Gaming</a>
+            <a>Political</a>
+            <a>Pop Culture</a>
+            <a>Sports</a>
+            <a>Technology</a>
+            <a>Wholesome</a>
+            <a>Other</a>
+        </div>
+    </div>
+    <div class="main">
+        {% if template_name == "post_list" %}
+            <div class="post_list" id="post_list">
+            </div>
+        {% elif template_name == "create_form" %}
+            <div class="create_form">
+                <form action=/create method="post" enctype="application/x-www-form-urlencoded">
+                    Create post
+                    <br><br>
+                    <label>
+                        <input name="title" type="text" placeholder="title"/>
+                    </label>
+                    <br><br>
+                    <textarea name="message" placeholder="message" rows="10" cols="50"></textarea>
+                    <br><br>
+                <input type="submit" value="Create">
+            </div>
+        {% elif template_name == "registration_form" %}
+            <div class="account_form">
+                <form action=/register method="post" enctype="application/x-www-form-urlencoded">
+                    Register account
+                    <br><br>
+                    <label>Username:
+                        <br>
+                        <input name="username" type="text"/>
+                        </label>
+                    <br>
+                    <label>Password:&nbsp;
+                        <br>
+                        <input name="password" type="password">
+                        </label>
+                    <br>
+                    <label>Confirm Password:&nbsp;
+                        <br>
+                        <input name="password_confirmation" type="password">
+                    </label>
+                    <br><br>
+                    <input type="submit" value="Register">
+                </form>
+            </div>
+        {% elif template_name == "login_form" %}
+            <div class="account_form">
+                <form action=/login method="post" enctype="application/x-www-form-urlencoded">
+                    Login account
+                    <br><br>
+                    <label>Username:
+                        <br>
+                        <input name="username" type="text"/>
+                        </label>
+                    <br>
+                    <label>Password:&nbsp;
+                        <br>
+                        <input name="password" type="password">
+                        </label>
+                    <br><br>
+                    <input type="submit" value="Login">
+                </form>
+            </div>
+        {% endif %}
+    </div>
+    <script src="/static/functions.js"></script>
+</body>
+</html>
