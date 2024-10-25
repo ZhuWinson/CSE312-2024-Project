@@ -1,50 +1,82 @@
-from flask import Flask, render_template, request, redirect
-from util.accounts import register, login, logout, accountCollection
-import secrets
+import html
+import json
+from flask import Flask, make_response, redirect, request
+from util.accounts import login_account, logout_account, register_account, purge_accounts, validate_password
+from util.posts import create_post, list_posts, purge_posts
+from util.renderer import render_home_page
 
-app = Flask(__name__)
+app = Flask(__name__, static_url_path="/static")
+
+@app.route("/account", methods=["GET"])
+def account_page():
+    auth_token = request.cookies.get("auth_token")
+    return render_home_page("Account Info", "account_info", auth_token)
+
+@app.route("/create", methods=["POST"])
+def create():
+    auth_token = request.cookies.get("auth_token")
+    title = html.escape(request.form.get("title", ""))
+    message = html.escape(request.form.get("message", ""))
+    create_post(title, message, auth_token)
+    return redirect("/")
+
+@app.route("/create", methods=["GET"])
+def create_page():
+    auth_token = request.cookies.get("auth_token")
+    return render_home_page("Create Post", "create_form", auth_token)
+
+@app.route("/", methods=["GET"])
+def home_page():
+    auth_token = request.cookies.get("auth_token")
+    return render_home_page("Home", "post_list", auth_token)
 
 @app.route("/login", methods=["POST"])
-def login_submit():
-    username = request.form.get("username")
+def login():
+    username = html.escape(request.form.get("username"))
     password = request.form.get("password")
-    return login(username, password)
+    auth_token = login_account(username, password)
+    response = make_response(redirect("/"))
+    if auth_token != None:
+        response.set_cookie("auth_token", auth_token, max_age=3600, httponly=True)
+    return response
 
 @app.route("/login", methods=["GET"])
 def login_page():
-    return render_index("Login", "login_form")
+    auth_token = request.cookies.get("auth_token")
+    return render_home_page("Account Login", "login_form", auth_token)
 
-@app.route("/logout", methods=["GET", "POST"])
-def logout_submit():
-    return logout()
+@app.route("/logout", methods=["GET"])
+def logout():
+    auth_token = request.cookies.get("auth_token")
+    logout_account(auth_token)
+    return redirect("/")
+
+@app.route("/posts", methods=["GET"])
+def post_list():
+    posts = json.dumps(list_posts()).encode()
+    response = make_response()
+    response.set_data(posts)
+    return response
+
+@app.route("/purge", methods=["GET"])
+def purge():
+    purge_accounts()
+    purge_posts()
+    return redirect("/")
 
 @app.route("/register", methods=["POST"])
-def register_submit():
-    username = request.form.get("username")
+def register():
+    username = html.escape(request.form.get("username"))
     password = request.form.get("password")
-    verification = request.form.get("verify")
-    return register(username, password, verification)
+    password_confirmation = request.form.get("password_confirmation")
+    if password == password_confirmation and validate_password(password):
+        register_account(username, password)
+    return redirect("/")
 
 @app.route("/register", methods=["GET"])
-def register_page():
-    return render_index("Registration", "register_form")
-
-def render_index(header_title, content_type):
-    username = "Guest"
-    authenticated = False
-    if "token" in request.cookies:
-        token = request.cookies.get("token")
-        authenticated = "token" in request.cookies
-        user = accountCollection.find_one({"token": token})
-        userContent = dict(user)
-        username = userContent.get("username")
-
-    return render_template(
-        "index.html",
-        authenticated=authenticated, 
-        header_title=header_title,
-        username=username,
-        content_type=content_type)
+def registration_page():
+    auth_token = request.cookies.get("auth_token")
+    return render_home_page("Account Registration", "registration_form", auth_token)
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8080, debug=True)
