@@ -7,10 +7,6 @@ from util.renderer import render_home_page
 
 app = Flask(__name__, static_url_path="/static")
 
-@app.route("/", methods=["GET"])
-def home_page():
-    return render_index("Trending", "post_list")
-
 @app.route("/invalidpassword")
 def invalid_password():
     return "<p> Invalid Password </p>",{"Refresh": "1; url=http://localhost:8080/"}
