@@ -81,6 +81,8 @@ def render_index(banner_title, template_name):
         if not user is None:
             userContent = dict(user)
             username = userContent.get("username")
+        else:
+            username = "UserNotFound"
 
     return render_template(
         "home_page.html",
