@@ -90,6 +90,7 @@ def render_index(banner_title, template_name):
 @app.route("/posts", methods=["GET"])
 def post_list():
     posts = json.dumps(list_posts()).encode()
+    response.headers["X-Content-Type-Options"] = "nosniff"
     response = make_response()
     response.set_data(posts)
     return response
@@ -105,6 +106,11 @@ def like(id):
     auth_token = request.cookies.get("auth_token")
     like_post(id, auth_token)
     return make_response("", 204)
+
+@app.after_request
+def apply_caching(response):
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    return response 
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8080, debug=True)
