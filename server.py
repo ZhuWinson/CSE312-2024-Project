@@ -1,6 +1,6 @@
 import html
 import json
-from flask import Flask, make_response, redirect, render_template, request, jsonify
+from flask import Flask, make_response, redirect, render_template, request
 from util.accounts import register, login, logout, purge_accounts, accountCollection
 from util.posts import create_post, like_post, list_posts, purge_posts
 from util.renderer import render_home_page
@@ -79,7 +79,6 @@ def render_index(banner_title, template_name):
             username = userContent.get("username")
         else:
             username = "UserNotFound"
-
     return render_template(
         "home_page.html",
         authenticated=authenticated, 
@@ -99,50 +98,13 @@ def post_list():
 def purge():
     purge_accounts()
     purge_posts()
-    return redirect("/")
+    return make_response("", 204)
 
 @app.route("/like/<id>", methods=["POST"])
 def like(id):
     auth_token = request.cookies.get("auth_token")
     like_post(id, auth_token)
-    return redirect("/")
+    return make_response("", 204)
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8080, debug=True)
-
-"""
-@app.route("/login", methods=["POST"])
-def login():
-    username = html.escape(request.form.get("username"))
-    password = request.form.get("password")
-    auth_token = login_account(username, password)
-    response = make_response(redirect("/"))
-    if auth_token != None:
-        response.set_cookie("auth_token", auth_token, max_age=3600, httponly=True)
-    return response
-
-@app.route("/login", methods=["GET"])
-def login_page():
-    auth_token = request.cookies.get("auth_token")
-    return render_home_page("Account Login", "login_form", auth_token)
-
-@app.route("/logout", methods=["GET"])
-def logout():
-    auth_token = request.cookies.get("auth_token")
-    logout_account(auth_token)
-    return redirect("/")
-
-@app.route("/register", methods=["POST"])
-def register():
-    username = html.escape(request.form.get("username"))
-    password = request.form.get("password")
-    password_confirmation = request.form.get("password_confirmation")
-    if password == password_confirmation and validate_password(password):
-        register_account(username, password)
-    return redirect("/")
-
-@app.route("/register", methods=["GET"])
-def registration_page():
-    auth_token = request.cookies.get("auth_token")
-    return render_home_page("Account Registration", "registration_form", auth_token)
-"""

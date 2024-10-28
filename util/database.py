@@ -7,8 +7,8 @@ def create_record(collection, record):
     collection.insert_one(record)
     return record_id
 
-def delete_record(collection, record_id):
-    collection.delete_one({"id": record_id})
+def delete_record(collection, query):
+    collection.delete_one(query)
 
 def list_records(collection):
     return list(collection.find({}, {"_id": False}))
