@@ -1,5 +1,4 @@
-function addPost(postJSON) {
-    let postList = document.getElementById("post_list");
+function addPost(postList, postJSON) {
     let postHTML = createPostHTML(postJSON)
     postList.insertAdjacentHTML("beforeend", postHTML);
     postList.scrollIntoView(false);
@@ -11,9 +10,12 @@ function createPostHTML(postJSON) {
     let title = postJSON.title
     let message = postJSON.message
     let id = postJSON.id
-    let postHTML = 
+    let postHTML =
         "<div class='post' id='message_" + id + "'>" +
             "<pre><b>" + username + ": " + title + "</b><br>" + message + "</pre>"+
+            "<form action='/like/" + id + "' method='POST'>" +
+                "<button type='submit'>Like</button>" +
+            "</form>" +
         "</div>"
     return postHTML
 }
@@ -31,9 +33,11 @@ function update() {
 
 function updatePosts(serverMessages) {
     let postList = document.getElementById("post_list");
-    postList.innerHTML = ""
-    for(element of serverMessages) {
-        addPost(element)
+    if(postList != null) {
+        postList.innerHTML = ""
+        for(element of serverMessages) {
+            addPost(postList, element)
+        }
     }
 }
 

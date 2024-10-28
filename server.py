@@ -1,8 +1,8 @@
 import html
 import json
-from flask import Flask, make_response, redirect, render_template, request
+from flask import Flask, make_response, redirect, render_template, request, jsonify
 from util.accounts import register, login, logout, purge_accounts, accountCollection
-from util.posts import create_post, list_posts, purge_posts
+from util.posts import create_post, like_post, list_posts, purge_posts
 from util.renderer import render_home_page
 
 app = Flask(__name__, static_url_path="/static")
@@ -99,6 +99,12 @@ def post_list():
 def purge():
     purge_accounts()
     purge_posts()
+    return redirect("/")
+
+@app.route("/like/<id>", methods=["POST"])
+def like(id):
+    auth_token = request.cookies.get("auth_token")
+    like_post(id, auth_token)
     return redirect("/")
 
 if __name__ == "__main__":
