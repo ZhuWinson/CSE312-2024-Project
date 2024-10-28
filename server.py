@@ -9,7 +9,6 @@ app = Flask(__name__, static_url_path="/static")
  
 @app.after_request
 def after_request(response):
-    response.headers["Cache-Control"] = "max-age=3600"
     response.headers["X-Content-Type-Options"] = "nosniff"
     return response 
 
