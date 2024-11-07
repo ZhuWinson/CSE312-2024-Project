@@ -1,12 +1,19 @@
 import html
 import json
-from flask import Flask, make_response, redirect, render_template, request
+from flask import Flask, flash,make_response, redirect, render_template, request, url_for
 from util.accounts import register, login, logout, purge_accounts, accountCollection
 from util.posts import create_post, like_post, list_posts, purge_posts
 from util.renderer import render_home_page
+from werkzeug.utils import secure_filename
+import os
+
+
+UPLOAD_FOLDER = '/path/to/the/uploads'
+ALLOWED_EXTENSIONS = { 'png', 'jpg', 'jpeg', 'gif'}
 
 app = Flask(__name__, static_url_path="/static")
- 
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
 @app.after_request
 def after_request(response):
     response.headers["X-Content-Type-Options"] = "nosniff"
@@ -29,12 +36,44 @@ def account_page():
     auth_token = request.cookies.get("auth_token")
     return render_home_page("Account Info", "account_info", auth_token)
 
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+def upload_file():
+    if request.method == 'POST':
+        # check if the post request has the file part
+        if 'file' not in request.files:
+            return ''
+        #     flash('No file part')
+        #     return redirect("/")
+        #file = request.form.get("file","")
+        file = request.files['file']
+        # If the user does not select a file, the browser submits an
+        # empty file without a filename.
+        if file == '':
+            flash('No selected file')
+            return redirect("/create")
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            return redirect(url_for('download_file', name=filename))
+    return ''
+
+
+
+
+
+
+
+
 @app.route("/create", methods=["POST"])
 def create():
     auth_token = request.cookies.get("auth_token")
     title = html.escape(request.form.get("title", ""))
     message = html.escape(request.form.get("message", ""))
-    create_post(title, message, auth_token)
+    file = upload_file()
+    create_post(title, message, auth_token,file)
     return redirect("/")
 
 @app.route("/create", methods=["GET"])

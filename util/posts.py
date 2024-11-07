@@ -2,12 +2,13 @@ from util.accounts import retrieve_account, retrieve_username
 from util.database import create_record, delete_record, list_records, retrieve_record, update_record, posts
 import sys
 
-def create_post(title, message, auth_token):
+def create_post(title, message, auth_token,file):
     title = title
     message = message
+    file = file
     account = retrieve_account(auth_token)
     username = retrieve_username(account)
-    post = {"username": username, "title": title, "message": message, "likes": []}
+    post = {"username": username, "title": title, "message": message, "likes": [],"file":file}
     return create_record(posts, post)
 
 def delete_post(post_id, auth_token):

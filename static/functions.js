@@ -11,15 +11,18 @@ function createPostHTML(postJSON) {
     let message = postJSON.message
     let likes = postJSON.likes.length
     let id = postJSON.id
+    let file = postJSON.file
     let messageHTML = "<pre><b>" + username + ": " + title + "</b><br>" + message + "</pre>"
     let likeButtonHTML = "<button type='submit'>Like (" + likes + ")</button>"
+    let fileHTML = "<div class='file' img src=" + file + "/>"
     let postHTML =
         "<div class='post' id='message_" + id + "'>" +
-            messageHTML + 
+            messageHTML + fileHTML
             "<form action='/like/" + id + "' method='POST'>" +
                 likeButtonHTML + 
             "</form>" +
         "</div>"
+    
     return postHTML
 }
 
