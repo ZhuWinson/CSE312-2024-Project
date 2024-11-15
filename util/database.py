@@ -10,8 +10,8 @@ def create_record(collection, record):
 def delete_record(collection, query):
     collection.delete_one(query)
 
-def list_records(collection):
-    return list(collection.find({}, {"_id": False}))
+def list_records(collection, query={}):
+    return list(collection.find(query, {"_id": False}))
 
 def retrieve_record(collection, query):
     return collection.find_one(query, {"_id": False})

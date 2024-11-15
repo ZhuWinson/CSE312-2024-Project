@@ -6,21 +6,41 @@ function addPost(postList, postJSON) {
 }
 
 function createPostHTML(postJSON) {
+    let postID = postJSON.id
     let username = postJSON.username
     let title = postJSON.title
     let message = postJSON.message
     let likes = postJSON.likes.length
-    let id = postJSON.id
+    let age = postJSON.age
     let messageHTML = "<pre><b>" + username + ": " + title + "</b><br>" + message + "</pre>"
-    let likeButtonHTML = "<button type='submit'>Like (" + likes + ")</button>"
+    let likeButtonHTML = "<input type='submit' value='Like (" + likes + ")'/>"
+    let postDataHTML = "Age: " + age
+    let deleteButtonHTML = "<button onclick='deletePost(\"" + postID + "\")'>Delete</button>"
     let postHTML =
-        "<div class='post' id='message_" + id + "'>" +
+        "<div class='post' id='message_" + postID + "'>" +
             messageHTML + 
-            "<form action='/like/" + id + "' method='POST'>" +
-                likeButtonHTML + 
-            "</form>" +
+            postDataHTML +
+            "<div class='post_buttons'>" +
+                "<form action='/like/" + postID + "' method='post'>" +
+                    likeButtonHTML + 
+                "</form>" +
+                deleteButtonHTML + 
+            "</div>"
         "</div>"
     return postHTML
+}
+
+function deletePost(postID) {
+    let request = new XMLHttpRequest();
+    request.open("DELETE", "/posts/" + postID);
+    request.send();
+}
+
+function findCategory(event) {
+    if(event.keyCode == 13) {
+        let categoryTextBox = document.getElementById("category_textbox");
+        window.location.href = "/" + categoryTextBox.value
+    }
 }
 
 function update() {
@@ -30,7 +50,7 @@ function update() {
             updatePosts(JSON.parse(this.response));
         }
     }
-    request.open("GET", "/posts");
+    request.open("GET", "/posts" + window.location.pathname);
     request.send();
 }
 
@@ -38,6 +58,9 @@ function updatePosts(serverMessages) {
     let postList = document.getElementById("post_list");
     if(postList != null) {
         postList.innerHTML = ""
+        if(serverMessages.length == 0) {
+            postList.innerHTML = "There are no posts in " + window.location.pathname
+        }
         for(element of serverMessages) {
             addPost(postList, element)
         }
@@ -46,5 +69,5 @@ function updatePosts(serverMessages) {
 
 function setup() {
     update()
-    setInterval(update, 3000);
+    setInterval(update, 1000);
 }

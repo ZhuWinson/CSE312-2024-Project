@@ -1,4 +1,5 @@
 a {
+    text-decoration: none;
     font-family: Arial;
     font-size: 16px;
     color: #000;
@@ -15,6 +16,7 @@ body {
 button, input[type="submit"] {
     border-style: solid;
     border-color: #0000FF;
+    border-radius: 5px;
     background-color: #FFF;
     color: #000;
     font-family: Arial;
@@ -29,6 +31,7 @@ button:hover, input[type="submit"]:hover {
 input[type="text"], input[type="password"] {
     border-style: solid;
     border-color: #0000FF;
+    border-radius: 5px;
     background-color: #FFF;
     color: #000;
     font-family: Arial;
@@ -43,9 +46,16 @@ input[type="text"]:focus, input[type="password"]:focus {
     background-color: #fdffb7;
 }
 
+pre {
+    font-family: Arial;
+    font-size: 16px;
+    color: #000;
+}
+
 textarea {
     border-style: solid;
     border-color: #0000FF;
+    border-radius: 5px;
     background-color: #FFF;
     color: #000;
     font-family: Arial;
@@ -124,6 +134,12 @@ textarea:hover {
     gap: 5px;
 }
 
+.find_category_form {
+    color: #000;
+    font-family: Arial;
+    font-size: 16px;
+}
+
 .main {
     margin-left: 140px;
     margin-top: 70px;
@@ -142,6 +158,10 @@ textarea:hover {
 .logo_image {
     width: 50px;
     height: 50px;
+    border-style: solid;
+    border-color: #0000FF;
+    border-width: 1px;
+    border-radius: 5px;
 }
 
 .logo_text {
@@ -154,25 +174,40 @@ textarea:hover {
 
 .post {
     align-self: start;
+    width: 95%;
+    height: 100%;
     border-style: solid;
     border-color: #0070ff;
+    border-radius: 5px;
     background-color: #FFF;
     color: #000;
     font-family: Arial;
     font-size: 16px;
-    padding-left: 10px;
-    padding-right: 10px;
+    padding: 10px;
+    padding-top: 0px;
 }
 
 .post:hover {
     background-color: #c1e0ff;
 }
 
+.post_buttons {
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+    margin-right: 10px;
+    gap: 10px;
+}
+
 .post_list {
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: start;
     overflow: auto;
+    color: #808080;
+    font-family: Arial;
+    font-size: 25px;
+    font-weight: bold;
     padding: 20px;
     gap: 20px;
 }
@@ -182,10 +217,14 @@ textarea:hover {
     top: 0;
     left: 0;
     z-index: 0;
-    width: 150px;
+    width: 160px;
     height: 100%;
     background-color: #b0b0b0;
     padding-top: 70px;
+}
+
+.sidebar_textbox {
+    width: 100px;
 }
 
 .username {

@@ -6,12 +6,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LMAO.com</title>
     <link rel="stylesheet" type="text/css" href="/static/style.css"/>
-    <link rel="shortcut icon" type="image/x-icon" href="/static/image/favicon.ico">
+    <link rel="shortcut icon" type="image/x-icon" href="/static/favicon.ico">
 </head>
 <body onload="setup()">
     <div class="banner">
         <div class="logo" onclick="location.href='/'">
-            <img class="logo_image" src="/static/image/lmao_logo.jpg">
+            <img class="logo_image" src="/static/media/lmao_logo.jpg">
             <div class="logo_text">LMAO.com</div>
         </div>
         <div class="banner_title">{{banner_title}}</div>
@@ -38,22 +38,29 @@
         </div>
         <div class="category_selector">
             <div class="category_header">Categories</div>
-            <a>Trending</a>
-            <a>Animals</a>
-            <a>Dark Humor</a>
-            <a>Gaming</a>
-            <a>Political</a>
-            <a>Pop Culture</a>
-            <a>Sports</a>
-            <a>Technology</a>
-            <a>Wholesome</a>
-            <a>Other</a>
+            <a href="/recent">Recent</a>
+            <a href="/memes">Memes</a>
+            <a href="/animals">Animals</a>
+            <a href="/gaming">Gaming</a>
+            <a href="/sports">Sports</a>
+            <a href="/politics">Politics</a>
+            <a href="/darkhumor">Dark Humor</a>
+            <a href="/cse312cheating">CSE 312 Cheating</a>
+            <a href="/illegalactivities">Illegal Activities</a>
+            <a href="/stupidjokes">Stupid Jokes</a>
+            <div class="find_category_form">
+                <br>
+                Find Category
+                <label>
+                    <input id="category_textbox" class="sidebar_textbox" type="text" placeholder="category" onkeypress="findCategory(event)"/>
+                </label>
+            </div>
         </div>
     </div>
     <div class="main">
         {% if template_name == "post_list" %}
-            <div class="post_list" id="post_list">
-            </div>
+            <script>let selected_category = "{{category}}";</script>
+            <div class="post_list" id="post_list"></div>
         {% elif template_name == "create_form" %}
             <div class="create_form">
                 <form action=/create method="post" enctype="application/x-www-form-urlencoded">
@@ -65,7 +72,11 @@
                     <br><br>
                     <textarea name="message" placeholder="message" rows="10" cols="50"></textarea>
                     <br><br>
-                <input type="submit" value="Create">
+                    <input type="submit" value="Create">
+                    <label>
+                        <input name="category" type="text" placeholder="category"/>
+                    </label>
+                </form>
             </div>
         {% elif template_name == "registration_form" %}
             <div class="account_form">
