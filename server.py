@@ -1,11 +1,15 @@
 import html
 import json
+
+from bson import ObjectId
 from flask import Flask, make_response, redirect, render_template, request
+from flask_socketio import SocketIO, emit
 from util.accounts import register, login, logout, purge_accounts, accountCollection
-from util.posts import create_post, like_post, list_posts, purge_posts
+from util.posts import create_post, like_post, list_posts, purge_posts, retrieve_post
 from util.renderer import render_home_page
 
 app = Flask(__name__, static_url_path="/static")
+socketio = SocketIO(app)
  
 @app.after_request
 def after_request(response):
@@ -34,7 +38,17 @@ def create():
     auth_token = request.cookies.get("auth_token")
     title = html.escape(request.form.get("title", ""))
     message = html.escape(request.form.get("message", ""))
-    create_post(title, message, auth_token)
+    record, post = create_post(title, message, auth_token)
+    print(post)
+
+    if '_id' in post:
+        del post['_id']
+
+    print(post)
+
+    #Send to all connected clients via websockets
+    socketio.emit("new_post", post)
+
     return redirect("/")
 
 @app.route("/create", methods=["GET"])
@@ -105,11 +119,27 @@ def purge():
     purge_posts()
     return make_response("", 204)
 
-@app.route("/like/<id>", methods=["POST"])
-def like(id):
+# @app.route("/like/<id>", methods=["POST"])
+# def like(id):
+#     auth_token = request.cookies.get("auth_token")
+#     like_post(id, auth_token)
+#     return make_response("", 204)
+
+@socketio.on('like_post')
+def handle_like_post(post_id):
     auth_token = request.cookies.get("auth_token")
-    like_post(id, auth_token)
-    return make_response("", 204)
+    success = like_post(post_id, auth_token)
+    if success:
+        post = retrieve_post(post_id)
+        emit('like_update', post, broadcast=True)
+
+@socketio.on("connect")
+def handshake():
+    print("Client Connected")
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=8080, debug=True)
+    # app.run(host="0.0.0.0", port=8080, debug=True)
+
+    # Websockets Start (UNSAFE FOR NOW)
+    socketio.run(app,host="0.0.0.0", port=8080, allow_unsafe_werkzeug=True)
+    # Websockets End
