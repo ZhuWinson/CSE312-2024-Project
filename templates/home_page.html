@@ -7,6 +7,7 @@
     <title>LMAO.com</title>
     <link rel="stylesheet" type="text/css" href="/static/style.css"/>
     <link rel="shortcut icon" type="image/x-icon" href="/static/image/favicon.ico">
+    <script src="https://cdn.socket.io/4.8.1/socket.io.min.js" integrity="sha384-mkQ3/7FUtcGyoppY6bz/PORYoGqOl7/aSUMn2ymDOJcapfS6PHqxhRTMh1RR0Q6+" crossorigin="anonymous"></script>
 </head>
 <body onload="setup()">
     <div class="banner">
@@ -53,6 +54,12 @@
     <div class="main">
         {% if template_name == "post_list" %}
             <div class="post_list" id="post_list">
+                {% for post in posts %}
+                    <div class="post" id="message_{{ post.id }}">
+                        <pre><b>{{ post.username }}: {{ post.title }}</b><br>{{ post.message }}</pre>
+                        <button type="button" onclick="likePost(event, '{{ post.id }}')">Like ({{ post.likes.length }})</button>
+                    </div>
+                {% endfor %}
             </div>
         {% elif template_name == "create_form" %}
             <div class="create_form">

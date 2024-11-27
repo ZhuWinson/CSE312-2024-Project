@@ -8,7 +8,8 @@ def create_post(title, message, auth_token):
     account = retrieve_account(auth_token)
     username = retrieve_username(account)
     post = {"username": username, "title": title, "message": message, "likes": []}
-    return create_record(posts, post)
+
+    return create_record(posts, post), post
 
 def delete_post(post_id, auth_token):
     account = retrieve_account(auth_token)
