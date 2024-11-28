@@ -50,7 +50,7 @@ def create():
     category = html.escape(request.form.get("category", ""))
     category = category.replace(" ", "")
     category = category.lower()
-    #Send to all connected clients via websockets
+    # Send to all connected clients via websockets
     post = create_post(title, message, file, category, auth_token)
     socketio.emit("post", post)
     return redirect("/home/" + category)
