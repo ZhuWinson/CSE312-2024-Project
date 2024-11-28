@@ -37,7 +37,7 @@ function createPostInnerHTML(postJSON) {
         }
     }
     let likeButtonHTML = "<button type='button' onclick='wsLikePost(event, \"" + postId + "\")'>Like (" + likes + ")</button>"
-    let postDataHTML = "Age: " + age
+    let postDataHTML = "Posted: " + age + " Seconds Ago."
     let deleteButtonHTML = "<button onclick='wsDeletePost(event, \"" + postId + "\")'>Delete</button>"
     let postInnerHTML = 
         messageHTML + 
