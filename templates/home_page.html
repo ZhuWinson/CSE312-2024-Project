@@ -7,8 +7,9 @@
     <title>LMAO.com</title>
     <link rel="stylesheet" type="text/css" href="/static/style.css"/>
     <link rel="shortcut icon" type="image/x-icon" href="/static/favicon.ico">
+    <script src="https://cdn.socket.io/4.8.1/socket.io.min.js" integrity="sha384-mkQ3/7FUtcGyoppY6bz/PORYoGqOl7/aSUMn2ymDOJcapfS6PHqxhRTMh1RR0Q6+" crossorigin="anonymous"></script>
 </head>
-<body onload="setup()">
+<body onload="update()">
     <div class="banner">
         <div class="logo" onclick="location.href='/'">
             <img class="logo_image" src="/static/media/lmao_logo.jpg">
@@ -38,28 +39,27 @@
         </div>
         <div class="category_selector">
             <div class="category_header">Categories</div>
-            <a href="/recent">Recent</a>
-            <a href="/memes">Memes</a>
-            <a href="/animals">Animals</a>
-            <a href="/gaming">Gaming</a>
-            <a href="/sports">Sports</a>
-            <a href="/politics">Politics</a>
-            <a href="/darkhumor">Dark Humor</a>
-            <a href="/cse312cheating">CSE 312 Cheating</a>
-            <a href="/illegalactivities">Illegal Activities</a>
-            <a href="/stupidjokes">Stupid Jokes</a>
+            <a href="/home/recent">Recent</a>
+            <a href="/home//memes">Memes</a>
+            <a href="/home//animals">Animals</a>
+            <a href="/home//gaming">Gaming</a>
+            <a href="/home//sports">Sports</a>
+            <a href="/home//politics">Politics</a>
+            <a href="/home//darkhumor">Dark Humor</a>
+            <a href="/home//cse312cheating">CSE 312 Cheating</a>
+            <a href="/home//illegalactivities">Illegal Activities</a>
+            <a href="/home//stupidjokes">Stupid Jokes</a>
             <div class="find_category_form">
                 <br>
                 Find Category
                 <label>
-                    <input id="category_textbox" class="sidebar_textbox" type="text" placeholder="category" onkeypress="findCategory(event)"/>
+                    <input id="category_textbox" class="sidebar_textbox" type="text" placeholder="category" onkeypress="enterCategory(event)"/>
                 </label>
             </div>
         </div>
     </div>
     <div class="main">
         {% if template_name == "post_list" %}
-            <script>let selected_category = "{{category}}";</script>
             <div class="post_list" id="post_list"></div>
         {% elif template_name == "create_form" %}
             <div class="create_form">

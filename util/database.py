@@ -3,7 +3,7 @@ from pymongo import MongoClient
 
 def create_record(collection, record):
     record_id = str(uuid.uuid4())
-    record.setdefault("id", record_id)
+    record["id"] = record_id
     collection.insert_one(record)
     return record_id
 

@@ -1,7 +1,8 @@
-from flask import Flask, make_response, redirect, render_template, request
-from util.accounts import register, login, logout, purge_accounts, accountCollection
+from flask import Flask, make_response, redirect, request
+from flask_socketio import SocketIO, emit
+from util.accounts import register, login, logout, purge_accounts
 from util.posts import create_post, delete_post, like_post, list_posts, list_recent_posts
-from util.posts import purge_posts, update_post_ages
+from util.posts import purge_posts, retrieve_post, update_post_ages
 from util.renderer import render_home_page
 import atexit
 import html
@@ -10,6 +11,7 @@ import threading
 import time
 
 app = Flask(__name__, static_url_path="/static")
+socketio = SocketIO(app)
 
 @app.after_request
 def after_request(response):
@@ -33,6 +35,11 @@ def account_page():
     auth_token = request.cookies.get("auth_token")
     return render_home_page("Account Info", "account_info", auth_token)
 
+@app.route("/home/<category>", methods=["GET"])
+def category_page(category):
+    auth_token = request.cookies.get("auth_token")
+    return render_home_page("/" + category, "post_list", auth_token)
+
 @app.route("/create", methods=["POST"])
 def create():
     auth_token = request.cookies.get("auth_token")
@@ -41,8 +48,10 @@ def create():
     category = html.escape(request.form.get("category", ""))
     category = category.replace(" ", "")
     category = category.lower()
-    create_post(title, message, category, auth_token)
-    return redirect("/" + category)
+    #Send to all connected clients via websockets
+    post = create_post(title, message, category, auth_token)
+    socketio.emit("post", post)
+    return redirect("/home/" + category)
 
 @app.route("/create", methods=["GET"])
 def create_page():
@@ -59,15 +68,16 @@ def delete(id):
     return make_response("", 204)
 
 @app.route("/", methods=["GET"])
+@app.route("/home", methods=["GET"])
+@app.route("/home/", methods=["GET"])
 def home_page():
-    return redirect("/recent")
+    return redirect("/home/recent")
 
-@app.route("/<category>", methods=["GET"])
-def home_page_category(category):
-    if category == "":
-        category = "recent"
+@app.route("/like/<id>", methods=["POST"])
+def like(id):
     auth_token = request.cookies.get("auth_token")
-    return render_home_page("/" + category, "post_list", auth_token)
+    like_post(id, auth_token)
+    return make_response("", 204)
 
 @app.route("/login", methods=["POST"])
 def login_submit():
@@ -77,7 +87,8 @@ def login_submit():
 
 @app.route("/login", methods=["GET"])
 def login_page():
-    return render_index("Login", "login_form")
+    auth_token = request.cookies.get("auth_token")
+    return render_home_page("Login", "login_form", auth_token)
 
 @app.route("/logout", methods=["GET", "POST"])
 def logout_submit():
@@ -92,27 +103,8 @@ def register_submit():
 
 @app.route("/register", methods=["GET"])
 def register_page():
-    return render_index("Registration", "registration_form")
-
-def render_index(banner_title, template_name):
-    username = "Guest"
-    authenticated = False
-    if "auth_token" in request.cookies:
-        auth_token = request.cookies.get("auth_token")
-        authenticated = "auth_token" in request.cookies
-        user = accountCollection.find_one({"auth_token": auth_token})
-        if not user is None:
-            userContent = dict(user)
-            username = userContent.get("username")
-        else:
-            username = "UserNotFound"
-    return render_template(
-        "home_page.html",
-        authenticated=authenticated, 
-        banner_title=banner_title,
-        username=username,
-        template_name=template_name,
-    )
+    auth_token = request.cookies.get("auth_token")
+    return render_home_page("Register", "registration_form", auth_token)
 
 @app.route("/posts/<category>", methods=["GET"])
 def post_list(category):
@@ -133,22 +125,36 @@ def purge():
     purge_posts()
     return redirect("/")
 
-@app.route("/like/<id>", methods=["POST"])
-def like(id):
-    auth_token = request.cookies.get("auth_token")
-    like_post(id, auth_token)
-    return make_response("", 204)
-
 def update():
-    update_post_ages()
-    time.sleep(1)
-    update()
+    while True:
+        update_post_ages()
+        time.sleep(1)
 
-# use_reloder is now False!!!!!!
-# this is necessary for threading work properly
-# if you are experiencing bugs, try setting use_reloader to True
+@socketio.on("connect")
+def ws_handshake():
+    print("Client Connected")
+
+@socketio.on('delete')
+def ws_delete_post(post_id):
+    auth_token = request.cookies.get("auth_token")
+    authorized = delete_post(post_id, auth_token)
+    if authorized:
+        emit('remove', post_id, broadcast=True)
+
+@socketio.on('like')
+def ws_like_post(post_id):
+    auth_token = request.cookies.get("auth_token")
+    authorized = like_post(post_id, auth_token)
+    if authorized:
+        post = retrieve_post(post_id)
+        emit('update', post, broadcast=True)
+
 if __name__ == "__main__":
     thread = threading.Thread(target=update)
     thread.start()
     atexit.register(lambda: thread.join())
-    app.run(host="0.0.0.0", port=8080, debug=True, use_reloader=False)
+    # Websockets Start (UNSAFE FOR NOW)
+    # use_reloder is now False!!!!!!
+    # this is necessary for threading work properly
+    # if you are experiencing bugs, try setting use_reloader to True
+    socketio.run(app,host="0.0.0.0", port=8080, allow_unsafe_werkzeug=True, use_reloader=False)

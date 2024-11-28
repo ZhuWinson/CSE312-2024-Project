@@ -17,7 +17,10 @@ def create_post(title, message, category, auth_token):
         "recent": True}
     if category != "":
         post["category"] = category
-    return create_record(posts, post)
+    post_id = create_record(posts, post)
+    post.pop("_id", None)
+    post["id"] = post_id
+    return post
 
 def delete_post(post_id, auth_token):
     account = retrieve_account(auth_token)
