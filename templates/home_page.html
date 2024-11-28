@@ -63,7 +63,7 @@
             <div class="post_list" id="post_list"></div>
         {% elif template_name == "create_form" %}
             <div class="create_form">
-                <form action=/create method="post" enctype="application/x-www-form-urlencoded">
+                <form action=/create method="post" enctype="multipart/form-data">
                     Create post
                     <br><br>
                     <label>
@@ -71,6 +71,10 @@
                     </label>
                     <br><br>
                     <textarea name="message" placeholder="message" rows="10" cols="50"></textarea>
+                    <br><br>
+                    <label>Upload:
+                        <input type="file" name="upload">
+                    </label>
                     <br><br>
                     <input type="submit" value="Create">
                     <label>

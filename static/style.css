@@ -28,7 +28,13 @@ button:hover, input[type="submit"]:hover {
     background-color: #ffee00;
 }
 
-input[type="text"], input[type="password"] {
+input[type="file"] {
+    color: #000;
+    font-family: Arial;
+    font-size: 16px;
+}
+
+input[type="password"], input[type="text"] {
     border-style: solid;
     border-color: #0000FF;
     border-radius: 5px;
@@ -38,11 +44,11 @@ input[type="text"], input[type="password"] {
     font-size: 16px;
 }
 
-input[type="text"]:hover, input[type="password"]:hover {
+input[type="password"]:hover, input[type="text"]:hover {
     background-color: #fdffb7;
 }
 
-input[type="text"]:focus, input[type="password"]:focus {
+input[type="password"]:focus, input[type="text"]:focus {
     background-color: #fdffb7;
 }
 
@@ -225,6 +231,11 @@ textarea:hover {
 
 .sidebar_textbox {
     width: 100px;
+}
+
+.upload {
+    max-height: 60%;
+    width: 60%;
 }
 
 .username {

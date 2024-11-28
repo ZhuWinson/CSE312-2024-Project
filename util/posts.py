@@ -1,20 +1,30 @@
 from util.accounts import retrieve_account, retrieve_username
 from util.database import create_record, delete_record, list_records, retrieve_record, update_record, posts
+from pathlib import Path
+import uuid
 
 recent_age_threshold = 100
 
-def create_post(title, message, category, auth_token):
+def create_post(title, message, file, category, auth_token):
     title = title
     message = message
     account = retrieve_account(auth_token)
     username = retrieve_username(account)
+    file_path = None
+    mime_type = parse_mime_type(file.filename)
+    if file is not None and mime_type is not None:
+        file_path = "/static/media/uploads/" + str(uuid.uuid4())
+        file.save("." + file_path)
     post = {
         "username": username, 
         "title": title, 
-        "message": message, 
+        "message": message,
+        "file_path": file_path,
+        "mime_type": mime_type,
         "likes": [], 
         "age": 0, 
-        "recent": True}
+        "recent": True,
+    }
     if category != "":
         post["category"] = category
     post_id = create_record(posts, post)
@@ -28,6 +38,10 @@ def delete_post(post_id, auth_token):
     post = retrieve_post(post_id)
     if post == None or username != post.get("username"):
         return False
+    file_path = post.get("file_path")
+    if file_path != None:
+        file = Path(file_path)
+        file.unlink(True)
     delete_record(posts, {"id": post_id})
     return True
 
@@ -54,8 +68,20 @@ def list_posts(category=None):
 def list_recent_posts():
     return list_records(posts, {"recent": True})
 
+def parse_mime_type(file_name):
+    if "." not in file_name:
+        return None
+    file_extension = file_name.rsplit('.', 1)[1].lower()
+    return mime_types.get(file_extension)
+
 def purge_posts():
     posts.delete_many({})
+
+def purge_uploads():
+    directory = Path("./static/media/uploads/")
+    for element in directory.iterdir():
+        element.unlink()
+
 
 def retrieve_post(post_id):
     return retrieve_record(posts, {"id": post_id})
@@ -69,3 +95,10 @@ def update_post_ages():
         if age > recent_age_threshold:
             record["recent"] = False
         update_record(posts, {"id": post_id}, record)
+
+mime_types = {
+    "gif": "image/gif",
+    "jpg": "image/jpeg",
+    "mp4": "video/mp4",
+    "png": "image/png",
+}

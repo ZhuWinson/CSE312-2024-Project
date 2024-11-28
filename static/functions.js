@@ -21,14 +21,28 @@ function createPostInnerHTML(postJSON) {
     let username = postJSON.username
     let title = postJSON.title
     let message = postJSON.message
+    let filePath = postJSON.file_path
+    let mimeType = postJSON.mime_type
     let likes = postJSON.likes.length
     let age = postJSON.age
     let messageHTML = "<pre><b>" + username + ": " + title + "</b><br>" + message + "</pre>"
+    let fileHTML = ""
+    if(filePath != null) {
+        if(mimeType.startsWith("image")) {
+            fileHTML = "<img class=\"upload\" type=" + mimeType + " src=\"" + filePath + "\" alt=\"image not found\"/>"
+        } else if(mimeType.startsWith("video")) {
+            fileHTML =  "<video class=\"upload\" controls autoplay>"
+            fileHTML += "<source type=" + mimeType + " src=\"" + filePath + "\" alt=\"video not found\">"
+            fileHTML += "</video>"
+        }
+    }
     let likeButtonHTML = "<button type='button' onclick='wsLikePost(event, \"" + postId + "\")'>Like (" + likes + ")</button>"
     let postDataHTML = "Age: " + age
     let deleteButtonHTML = "<button onclick='wsDeletePost(event, \"" + postId + "\")'>Delete</button>"
     let postInnerHTML = 
         messageHTML + 
+        fileHTML +
+        "<br>" +
         postDataHTML +
         "<div class='post_buttons'>" +
             likeButtonHTML + 

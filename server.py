@@ -2,11 +2,12 @@ from flask import Flask, make_response, redirect, request
 from flask_socketio import SocketIO, emit
 from util.accounts import register, login, logout, purge_accounts
 from util.posts import create_post, delete_post, like_post, list_posts, list_recent_posts
-from util.posts import purge_posts, retrieve_post, update_post_ages
+from util.posts import purge_posts, purge_uploads, retrieve_post, update_post_ages
 from util.renderer import render_home_page
 import atexit
 import html
 import json
+import os
 import threading
 import time
 
@@ -45,11 +46,12 @@ def create():
     auth_token = request.cookies.get("auth_token")
     title = html.escape(request.form.get("title", ""))
     message = html.escape(request.form.get("message", ""))
+    file = request.files.get("upload")
     category = html.escape(request.form.get("category", ""))
     category = category.replace(" ", "")
     category = category.lower()
     #Send to all connected clients via websockets
-    post = create_post(title, message, category, auth_token)
+    post = create_post(title, message, file, category, auth_token)
     socketio.emit("post", post)
     return redirect("/home/" + category)
 
@@ -121,8 +123,12 @@ def post_list(category):
 
 @app.route("/purge", methods=["GET"])
 def purge():
+    dev_mode = os.environ.get("DEV_MODE")
+    if dev_mode != "enabled":
+        return make_response("", 404)
     purge_accounts()
     purge_posts()
+    purge_uploads()
     return redirect("/")
 
 def update():
