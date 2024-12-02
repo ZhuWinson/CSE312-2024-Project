@@ -5,7 +5,7 @@ services:
   server:
     build: .
     environment:
-      DEV_MODE: enabled
+      DEV_MODE: disabled
       WAIT_HOSTS: mongo:27017
     ports:
     - '8080:8080'
