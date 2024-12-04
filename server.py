@@ -32,7 +32,6 @@ globalLimit = limiter.shared_limit("50 per 10 seconds", scope="*")
 @app.before_request
 @globalLimit
 def checkIP():
-    print("Before request")
     ip = get_remote_address()
     currTime = time.time()
     if ip in blocked_ips:

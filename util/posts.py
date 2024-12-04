@@ -3,6 +3,7 @@ from util.database import create_record, delete_record, list_records, retrieve_r
 from pathlib import Path
 import uuid
 
+max_age_threshold = 300
 recent_age_threshold = 100
 
 def create_post(title, message, file, category, auth_token):
@@ -22,7 +23,7 @@ def create_post(title, message, file, category, auth_token):
         "file_path": file_path,
         "mime_type": mime_type,
         "likes": [], 
-        "age": 0, 
+        "age": "0", 
         "recent": True,
     }
     if category != "":
@@ -90,11 +91,15 @@ def update_post_ages():
     post_list = list_posts()
     for element in post_list:
         post_id = element.get("id")
-        age = element.get("age") + 1
-        record = {"age": age}
-        if age > recent_age_threshold:
-            record["recent"] = False
-        update_record(posts, {"id": post_id}, record)
+        age = element.get("age")
+        if not age == "Eons ago":
+            age = int(element.get("age")) + 1
+            if age > max_age_thresold:
+                age = "Eons ago"
+            record = {"age": str(age)}
+            if age > recent_age_threshold:
+                record["recent"] = False
+            update_record(posts, {"id": post_id}, record)
 
 mime_types = {
     "gif": "image/gif",
