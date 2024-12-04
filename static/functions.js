@@ -25,7 +25,7 @@ function createPostInnerHTML(postJSON) {
     let mimeType = postJSON.mime_type
     let likes = postJSON.likes.length
     let age = postJSON.age
-    let messageHTML = "<pre><b>" + username + ": " + title + "</b><br>" + message + "</pre>"
+    let messageHTML = "<b>" + username + ": " + title + "</b><br><div class='message'>" + message + "</div></br>"
     let fileHTML = ""
     if(filePath != null) {
         if(mimeType.startsWith("image")) {
@@ -42,7 +42,7 @@ function createPostInnerHTML(postJSON) {
     let postInnerHTML = 
         messageHTML + 
         fileHTML +
-        "<br>" +
+        "</br>" +
         postDataHTML +
         "<div class='post_buttons'>" +
             likeButtonHTML + 
