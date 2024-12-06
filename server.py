@@ -13,6 +13,13 @@ import os
 import threading
 import time
 
+max_category_length = 25
+max_file_length = 100000000
+max_message_length = 200
+max_password_length = 25
+max_title_length = 25
+max_username_length = 25
+
 app = Flask(__name__, static_url_path="/static")
 socketio = SocketIO(app)
 blocked_ips = {}
@@ -45,20 +52,25 @@ def after_request(response):
     response.headers["X-Content-Type-Options"] = "nosniff"
     return response 
 
+@app.route("/lengthexceeded")
+@globalLimit
+def length_exceeded():
+    return "<p> User input exceeded max length </p>", {"Refresh": "3; url=http://localhost:8080/"}
+
 @app.route("/invalidpassword")
 @globalLimit
 def invalid_password():
-    return "<p> Invalid Password </p>",{"Refresh": "1; url=http://localhost:8080/"}
+    return "<p> Invalid Password </p>", {"Refresh": "1; url=http://localhost:8080/"}
 
 @app.route("/passwordmismatch")
 @globalLimit
 def mismatch_password():
-    return "<p> Passwords Do Not Match </p>",{"Refresh": "1; url=http://localhost:8080/"}
+    return "<p> Passwords Do Not Match </p>", {"Refresh": "1; url=http://localhost:8080/"}
 
 @app.route("/usertaken")
 @globalLimit
 def user_taken():
-    return "<p> Username Taken </p>",{"Refresh": "1; url=http://localhost:8080/"}
+    return "<p> Username Taken </p>", {"Refresh": "1; url=http://localhost:8080/"}
 
 @app.route("/account", methods=["GET"])
 @globalLimit
@@ -77,11 +89,22 @@ def category_page(category):
 def create():
     auth_token = request.cookies.get("auth_token")
     title = html.escape(request.form.get("title", ""))
+    if len(title) > max_title_length:
+        return redirect("/lengthexceeded")
     message = html.escape(request.form.get("message", ""))
+    if len(message) > max_message_length:
+        return redirect("/lengthexceeded")
     file = request.files.get("upload")
+    if file is not None:
+        file_length = file.seek(0, os.SEEK_END)
+        file.seek(0, os.SEEK_SET)
+        if file_length > max_file_length:
+            return redirect("/lengthexceeded")
     category = html.escape(request.form.get("category", ""))
     category = category.replace(" ", "")
     category = category.lower()
+    if(len(category) > max_category_length):
+        return redirect("/lengthexceeded")
     # Send to all connected clients via websockets
     post = create_post(title, message, file, category, auth_token)
     socketio.emit("post", post)
@@ -141,6 +164,10 @@ def register_submit():
     username = html.escape(request.form.get("username"))
     password = request.form.get("password")
     verification = request.form.get("password_confirmation")
+    if len(username) > max_username_length:
+        return redirect("/lengthexceeded")
+    if len(password) > max_password_length or len(verification) > max_password_length:
+        return redirect("/lengthexceeded")
     return register(username, password, verification)
 
 @app.route("/register", methods=["GET"])

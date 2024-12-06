@@ -93,11 +93,12 @@ def update_post_ages():
         post_id = element.get("id")
         age = element.get("age")
         if not age == "Eons ago":
+            print(age)
             age = int(element.get("age")) + 1
-            if age > max_age_thresold:
+            if age > max_age_threshold:
                 age = "Eons ago"
             record = {"age": str(age)}
-            if age > recent_age_threshold:
+            if age != "Eons ago" and age > recent_age_threshold:
                 record["recent"] = False
             update_record(posts, {"id": post_id}, record)
 
