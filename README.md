@@ -5,14 +5,14 @@ A website where you can post funny memes and pictures.
 - Cool feature is sorting posts by tags
 
 # Sense of time feature: post age
-lmaowajd.com can track a post's age by seconds. To further elaborate, a post has an age attribute which represents the number of seconds it has been posted for. The attribute can be viewed after creating the post, navigating the page it was posted to (see the creative feature), and viewing the text towards the bottom of the post. It should read something alonf the lines of "Posted x seconds ago", where x represents the post's age in seconds. This feature affects how the app functions, posts that exist for 
+lmaowajd.com can track a post's age by seconds. To further elaborate, a post has an age attribute which represents the number of seconds it has been posted for. The attribute can be viewed after creating the post, navigating the page it was posted to (see the creative feature), and viewing the text towards the bottom of the post. It should read something alonf the lines of "Posted x seconds ago", where x represents the post's age in seconds. This feature affects how the app functions, as posts that exist for over 100 seconds are removed from localhost:8080/home/recent/.
 
 # Creative feature: sorting posts by categories
 lmaowajd.com allows users to choose which category their post belongs to. This category attribute determines which page their post will be posted to. 
 
 To apply a category, create a page by pressing the "Create" button on the home page. From there, create the post by filling out the entire form, and make sure to provide a category using the bottom text field. Spaces, upperchase letters, and non-letter characters are not considered valid. If a post is given the category of an empty string, the post will have no category and will be posted only to the recent page. Once the post is considered non-recent, it will be lost forever. 
 
-The specific pages can be found by using the search bar on the left side of the screen. This search bar will redirect the user to https://localhost:8080/home/<user_input>, where <user_input> is replaced by the input in the searchbar. Furthermore, specific pages can simply be located by navigating to https://localhost:8080/home/<category_name>, where <category_name> is replaced by the category attribute of all the posts on the page.
+The specific pages can be found by using the search bar on the left side of the screen. This search bar will redirect the user to https://localhost:8080/home/<user_input>, where <user_input> is replaced by the input in the searchbar. Furthermore, specific pages can simply be located by navigating to localhost:8080/home/<category_name>, where <category_name> is replaced by the category attribute of all the posts on the page.
 
 To best test the category feature, perform the following procedure:
 
