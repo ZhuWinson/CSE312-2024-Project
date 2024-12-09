@@ -1,8 +1,8 @@
 # Project Description:
 A website where you can post funny memes and pictures.
 - lmaowajd.com
-- Sense of time is implemented by keeping track of the recency of posts
-- Cool feature is sorting posts by tags
+- Sense of time is implemented by keeping track of the recency of posts (after 2 minutes posts disappear from recent page, and after 5 timer changes)
+- Cool feature is sorting posts by tags (If the tag has spaces don't type them in for example making a post for Dark Humor in the bar put DarkHumor)
 
 # Sense of time feature: post age
 lmaowajd.com can track a post's age by seconds. To further elaborate, a post has an age attribute which represents the number of seconds it has been posted for. The attribute can be viewed after creating the post, navigating the page it was posted to (see the creative feature), and viewing the text towards the bottom of the post. It should read something alonf the lines of "Posted x seconds ago", where x represents the post's age in seconds. This feature affects how the app functions, as posts that exist for over 100 seconds are removed from localhost:8080/home/recent/.
